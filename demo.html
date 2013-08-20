@@ -1,0 +1,41 @@
+<!DOCTYPE>
+<html>
+<head>
+<title>bubbleTags demo</title>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript" src="jquery.bubbletags.js"></script>
+<link rel="stylesheet" type="text/css" src="bubbletags.css" />
+<script type="text/javascript">
+$(document).ready(function() {
+	$('.input').bubbleTags({
+		container: $('.container'),
+		/* Everything below is optional and can be removed without breaking anything. */
+		classes: ['some', 'example','classes'], // Optional classes to add to each tag.
+		onDeleteTag: function() {
+			// Optional.
+			// This is called when a tag is "closed" or removed from the DOM by clicking on the "x".
+			$('#aloha').append('<p>onDeleteTag function triggered.</p>');
+			},
+		onNewTag: function() {
+			// Optional.
+			// This is called when a new tag is generated.
+			$('#aloha').append('<p>onNewTag function triggered.</p>');
+			},
+		onSubmit: function() {
+			// Optional.
+			// This is called when you hit enter or submit a new tag, even if the tag is not generated.
+			$('#aloha').append('<p>onSubmit function triggered.</p>');
+			},
+		hiddenInput: $('<input>').addClass('demo') // Optional. Pass in a jquery object that will be used as the template for hidden input form fields.
+	});
+});
+</script>
+</head>
+<body>
+
+<input class="input" />
+<div class="container">&nbsp;</div>
+<div id="aloha">&nbsp;</div>
+
+</body>
+</html>

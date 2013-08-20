@@ -1,82 +1,107 @@
 $.fn.bubbleTags = function (settings) {
     "use strict";
+    var target = $(this),
+     
+    bubbleTagsSubmit = function() {
+        if (this.data('bubbleTags')) {
+            if (typeof settings.onSubmit === "function") {
+                settings.onSubmit.call(target, settings.container);
+            }
 
-    if (typeof settings.container === "object") {
-        this.keydown( function(evt) {
-            var closeButton,
-            tagText,
-            tagHtml,
+            var newTag = target.val();
+
+            if (settings.filterOut) {
+                newTag = newTag.replace(settings.filterOut, '').toLowerCase();
+            }
+
+            target.addTag(newTag);
+
+            setTimeout($.proxy(
+                    function() {
+                        target.val('');
+                    }, this
+                ), 
+            200);
+        }
+    },
+
+    bubbleTagsDeleteTag = function(tag) {
+        if (this.data('bubbleTags')) {
+            if (typeof tag === "object") {
+                tag.siblings('.bubbleTag_hiddenInput').val('');
+                tag.parent('.bubbleTag_item').remove();
+
+                if (typeof settings.onDeleteTag === "function") {
+                    settings.onDeleteTag.call(target, settings.container, tag.val());
+                }
+
+                if (settings.container.find('.bubbleTag_item').length === 0) {
+                    settings.container.removeClass('active');
+                }
+            }
+        }
+    },
+
+    bubbleTagsAddTag = function(newTag) {
+        if (this.data('bubbleTags')) {
+            var closeButton, 
+            tagText, 
+            tagHtml, 
             listOfTags = [],
             repeatedTag = false,
-            newTag,
-            target = $(this),
             hiddenField;
 
             $.each(settings.container.find('input.bubbleTag_hiddenInput'), function(index, hiddenInputHtml) {
                 listOfTags.push($(hiddenInputHtml).val());
             });
 
-            if (evt.which === 13 || evt.which === 188) {
-                newTag = target.val().replace(/[^a-zA-Z\s]/g, '').replace(/^\s+|\s+$/g, '').toLowerCase();
+            if (newTag.length) {
+                $.each(listOfTags, function(index, existingTagValue) {
+                    if (existingTagValue === newTag) {
+                        repeatedTag = true;
+                    }
+                });
 
-                if (newTag.length) {
-                    $.each(listOfTags, function(index, existingTagValue) {
-                        if (existingTagValue === newTag) {
-                            repeatedTag = true;
-                        }
+                if (!repeatedTag) {
+                    closeButton = $('<span>').addClass('bubbleTag_close').html('x').on('click', function(evt) {
+                        evt.preventDefault();
+                        target.deleteTag( $(this) );
                     });
 
-                    if (!repeatedTag) {
-                        closeButton = $('<span>').addClass('bubbleTag_close').html('x').on('click', function(evt) {
-                            evt.preventDefault();
+                    tagText = $('<a>').addClass('bubbleTag_text').html(newTag);
+                    tagHtml = $('<span>').addClass('bubbleTag_item').data('tag', newTag).append(closeButton).append(tagText);
+                    if (typeof settings.hiddenField === "object") {
+                        hiddenField = settings.hiddenField.clone().addClass('bubbleTag_hiddenInput').data('tag',newTag).css('display','none').val(newTag);
+                    }
 
-                            $(this).siblings('.bubbleTag_hiddenInput').val('');
-                            $(this).parent('.bubbleTag_item').remove();
-                            if (typeof settings.onDeleteTag === "function") {
-                                settings.onDeleteTag.call(target, settings.container, $(this).val());                            }
+                    else {
+                        hiddenField = $('<input>').attr('class', 'bubbleTag_hiddenInput').data('tag', newTag).css('display','none').val(newTag);
+                    }
 
-                            if (settings.container.find('.bubbleTag_item').length === 0) {
-                                settings.container.removeClass('active');
-                            }                        });
+                    if (typeof settings.classes === "object") {
+                        $.each(settings.classes, function(index, classText) {
+                            tagHtml.addClass(classText);
+                        });
+                    }
 
-                        tagText = $('<a>').addClass('bubbleTag_text').html(newTag);
-                        tagHtml = $('<span>').addClass('bubbleTag_item').data('tag', newTag).append(tagText).               append(closeButton);
-                        if (typeof settings.hiddenField === "object") {
-                            hiddenField = settings.hiddenField.clone().addClass('bubbleTag_hiddenInput').data('tag',newTag).css('display','none').val(newTag);
-                        }
+                    tagHtml.append(hiddenField);
+                    settings.container.append(tagHtml);
 
-                        else {
-                            hiddenField = $('<input>').attr('class', 'bubbleTag_hiddenInput').data('tag', newTag).          css('display','none').val(newTag);
-                        }
+                    settings.container.addClass('active');
 
-                        if (typeof settings.classes === "object") {
-                            $.each(settings.classes, function(index, classText) {
-                                tagHtml.addClass(classText);
-                            });
-                        }
-
-                        tagHtml.append(hiddenField);
-                        settings.container.append(tagHtml);
-
-                        settings.container.addClass('active');
-
-                        if (typeof settings.onNewTag === "function") {
-                            settings.onNewTag.call(target, settings.container, tagHtml, newTag);
-                        }
+                    if (typeof settings.onNewTag === "function") {
+                        settings.onNewTag.call(target, settings.container, tagHtml, newTag);
                     }
                 }
-
-                if (typeof settings.onSubmit === "function") {
-                    settings.onSubmit.call(target, settings.container);
-                }
-
-                setTimeout($.proxy(
-                        function() {
-                            target.val('');
-                        }, this
-                    ),
-                200);
             }
-        });
-    }
+        }
+    };
+
+    $.fn.submitTag = bubbleTagsSubmit;
+    $.fn.addTag = bubbleTagsAddTag;
+    $.fn.deleteTag = bubbleTagsDeleteTag;
+   
+    this.data('bubbleTags', true);
+
+    return this;
 }
