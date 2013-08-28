@@ -4,7 +4,41 @@
 <title>bubbleTags demo</title>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script type="text/javascript" src="jquery.bubbletags.js"></script>
-<link rel="stylesheet" type="text/css" src="bubbletags.css" />
+<link rel="stylesheet" type="text/css" href="bubbletags.css" />
+<style type="text/css">
+	/* These styles are purely for example purposes.
+	/* The only CSS file necessary is bubbletags.css.
+	/* The rest is up to you. */
+	.example {
+		font-family: sans-serif;
+		font-size: 14px;
+		line-height: 20px;
+	}
+
+	.container.active {
+		margin-top: 5px;
+	}
+
+	.bubbleTag_close {
+		font-size: 11px;
+		padding-top: 2px;
+		padding-left: 6px;
+	}
+
+	textarea {
+		background-color: rgb(252,252,185);
+		border-radius: 9px;
+		-moz-border-radius: 9px;
+		padding: 0px 16px;
+		font-family: sans-serif;
+		border: 0px;
+	}
+
+	.javascript {
+		height: 460px;
+		width: 99%;
+	}
+</style>
 <script type="text/javascript">
 $(document).ready(function() {
 	$('.input').bubbleTags({
@@ -28,14 +62,52 @@ $(document).ready(function() {
 			},
 		hiddenInput: $('<input>').addClass('demo') // Optional. Pass in a jquery object that will be used as the template for hidden input form fields.
 	});
+
+	$('.input').keydown(function(evt) {
+		if (evt.which === 13) {
+			$('.input').submitTag();
+		}
+	});
 });
 </script>
 </head>
 <body>
-
+<p>Type something here and hit enter.  It will show up as a bubbleTag filter.</p>
 <input class="input" />
 <div class="container">&nbsp;</div>
 <div id="aloha">&nbsp;</div>
+
+<p>This is the bare minimum configuration in JavaScript for bubbleTags:</p>
+<textarea class="javascript">	
+$(document).ready(function() {
+        $('.input').bubbleTags({
+                container: $('.container'),
+                /* Everything below is optional and can be removed without breaking anything. */
+                classes: ['some', 'example','classes'], // Optional classes to add to each tag.
+                onDeleteTag: function() {
+                        // Optional.
+                        // This is called when a tag is "closed" or removed from the DOM by clicking on the "x".
+                        $('#aloha').append('<p>onDeleteTag function triggered.</p>');
+                        },
+                onNewTag: function() {
+                        // Optional.
+                        // This is called when a new tag is generated.
+                        $('#aloha').append('<p>onNewTag function triggered.</p>');
+                        },
+                onSubmit: function() {
+                        // Optional.
+                        // This is called when you hit enter or submit a new tag, even if the tag is not generated.
+                        $('#aloha').append('<p>onSubmit function triggered.</p>');
+                        },
+                hiddenInput: $('<input>').addClass('demo') // Optional. Pass in a jquery object that will be used as the template for hidden input form fields.
+        });
+
+        $('.input').keydown(function(evt) {
+                if (evt.which ===e3) {
+                        $('.input').submitTag();
+                }
+        });
+</textarea>
 
 </body>
 </html>
