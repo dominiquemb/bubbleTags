@@ -3,6 +3,17 @@ bubbleTags
 
 Tags or filters that appear when a search term is entered into a field.
 
+This plugin supports:
+
+1. Customization of the appearance of tags.
+2. Callbacks upon creation of new tags, on submission of tags (such as hitting enter in the search field), and on deletion of tags (such as when clicking the 'x' button on the tag).
+3. Arbitrary classes to be added to the tag itself.
+4. Arbitrary tag container that can be located anywhere on the page.
+5. Customizable hidden input element, to be used for form values, for example
+6. Function to trigger submission of new tag: $(container).submitTag();
+7. Function to create new tag with text: $(container).addTag('some example text');
+8. Function to delete already-existing tag: $(container).deleteTag( $(some-tag) );
+
 Here is the bare minimum configuration in order to use bubbleTags:
 
         $(document).ready(function() {
@@ -35,10 +46,3 @@ Here is the bare minimum configuration in order to use bubbleTags:
                 }
         });
         
-This plugin supports:
-
-1. Customization of the appearance of tags.
-2. Callbacks upon creation of new tags, on submission of tags (such as hitting enter in the search field), and on deletion of tags (such as when clicking the 'x' button on the tag).
-3. Arbitrary classes to be added to the tag itself.
-4. Arbitrary tag container that can be located anywhere on the page.
-5. Customizable hidden input element, to be used for form values, for example.
